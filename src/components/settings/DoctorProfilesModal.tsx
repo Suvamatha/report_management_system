@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Trash2, Eraser, FilePen, Upload } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import type { DoctorProfile } from '../../types';
@@ -18,6 +18,10 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
 }) => {
   const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
   const [editingDoc, setEditingDoc] = useState<Partial<DoctorProfile> | null>(null);
+  const [signatureMode, setSignatureMode] = useState<'upload' | 'draw'>('upload');
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -34,13 +38,19 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
     e.preventDefault();
     if (!editingDoc || !editingDoc.name) return;
 
+    let finalSig = editingDoc.signatureUrl;
+
+    if (signatureMode === 'draw' && canvasRef.current) {
+      finalSig = canvasRef.current.toDataURL('image/png');
+    }
+
     const docToSave: DoctorProfile = {
       id: editingDoc.id || `doc-${Date.now()}`,
       name: editingDoc.name,
       designation: editingDoc.designation || 'Consultant Pulmonologist',
       credentials: editingDoc.credentials || 'MD',
       department: editingDoc.department || 'Department of Pulmonology',
-      signatureUrl: editingDoc.signatureUrl,
+      signatureUrl: finalSig,
       isDefault: editingDoc.isDefault || false,
     };
 
@@ -66,6 +76,53 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
       }
     };
     reader.readAsDataURL(file);
+  };
+
+  // Canvas Drawing Handlers
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    ctx.beginPath();
+    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineTo(clientX - rect.left, clientY - rect.top);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   };
 
   return (
@@ -185,26 +242,77 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
               </div>
             </div>
 
-            {/* Signature Upload */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Digital Signature Image (PNG/JPG)
-              </label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg"
-                  className="text-xs"
-                  onChange={(e) => e.target.files?.[0] && handleSignatureUpload(e.target.files[0])}
-                />
-                {editingDoc.signatureUrl && (
-                  <img
-                    src={editingDoc.signatureUrl}
-                    alt="Preview Signature"
-                    className="h-8 max-w-[120px] object-contain border rounded p-1 bg-white"
-                  />
-                )}
+            {/* Signature Configuration Module */}
+            <div className="pt-2 border-t border-sky-200">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold text-slate-700">Digital Signature</label>
+                <div className="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg text-xs font-medium">
+                  <button
+                    type="button"
+                    onClick={() => setSignatureMode('upload')}
+                    className={`px-2.5 py-1 rounded-md transition-all ${
+                      signatureMode === 'upload' ? 'bg-white text-sky-900 shadow-2xs font-bold' : 'text-slate-600'
+                    }`}
+                  >
+                    Upload Image
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSignatureMode('draw')}
+                    className={`px-2.5 py-1 rounded-md transition-all ${
+                      signatureMode === 'draw' ? 'bg-white text-sky-900 shadow-2xs font-bold' : 'text-slate-600'
+                    }`}
+                  >
+                    Draw Signature
+                  </button>
+                </div>
               </div>
+
+              {signatureMode === 'upload' ? (
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    className="text-xs"
+                    onChange={(e) => e.target.files?.[0] && handleSignatureUpload(e.target.files[0])}
+                  />
+                  {editingDoc.signatureUrl && (
+                    <img
+                      src={editingDoc.signatureUrl}
+                      alt="Preview Signature"
+                      className="h-8 max-w-[120px] object-contain border rounded p-1 bg-white"
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="relative border-2 border-dashed border-slate-300 bg-white rounded-lg p-1 text-center">
+                    <canvas
+                      ref={canvasRef}
+                      width={400}
+                      height={100}
+                      onMouseDown={startDrawing}
+                      onMouseMove={draw}
+                      onMouseUp={stopDrawing}
+                      onMouseLeave={stopDrawing}
+                      onTouchStart={startDrawing}
+                      onTouchMove={draw}
+                      onTouchEnd={stopDrawing}
+                      className="w-full h-24 touch-none cursor-crosshair"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span>Draw signature using mouse, stylus, or touch screen</span>
+                    <button
+                      type="button"
+                      onClick={clearCanvas}
+                      className="flex items-center gap-1 text-rose-600 font-semibold hover:underline"
+                    >
+                      <Eraser className="w-3.5 h-3.5" /> Clear Canvas
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
@@ -212,7 +320,7 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
                 Cancel
               </Button>
               <Button type="submit" variant="primary" size="sm">
-                Save Doctor
+                Save Doctor Profile
               </Button>
             </div>
           </form>
