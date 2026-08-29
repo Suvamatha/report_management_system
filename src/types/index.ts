@@ -118,6 +118,8 @@ export interface Report {
   endobronchialBiopsy: EndobronchialBiopsyProcedure;
   conventionalTbna: TBNAProcedure;
   brushing: BrushingProcedure;
+  /** Free-form record of any interventions and samples collected. */
+  interventionsText?: string;
   impression: string;
   advice: string;
   images: MedicalImage[];

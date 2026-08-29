@@ -1,18 +1,19 @@
 import { getDB } from './db';
 import { auditService } from './auditService';
+import type { AuditLog, DoctorProfile, HospitalProfile, MedicalImage, Patient, Report, ReportTemplate } from '../../types';
 
 export interface BackupData {
   version: string;
   exportedAt: string;
   system: string;
   data: {
-    reports: any[];
-    images: any[];
-    patients: any[];
-    doctors: any[];
-    hospital: any[];
-    templates: any[];
-    audit_logs: any[];
+    reports: Report[];
+    images: MedicalImage[];
+    patients: Patient[];
+    doctors: DoctorProfile[];
+    hospital: HospitalProfile[];
+    templates: ReportTemplate[];
+    audit_logs: AuditLog[];
   };
 }
 

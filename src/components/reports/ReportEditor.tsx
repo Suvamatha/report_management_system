@@ -51,7 +51,7 @@ const SECTIONS = [
   { id: 'section-patient', label: 'Patient Information', icon: User },
   { id: 'section-visit', label: 'Visit & Referral', icon: Activity },
   { id: 'section-procedure', label: 'Procedure Details', icon: Stethoscope },
-  { id: 'section-ct', label: 'CT Findings', icon: FileText },
+  { id: 'section-ct', label: 'Radiological Finding', icon: FileText },
   { id: 'section-indication', label: 'Clinical Indication', icon: Stethoscope },
   { id: 'section-findings', label: 'Bronchoscopy Findings', icon: EyeIcon },
   { id: 'section-interventions', label: 'Interventions / Samples', icon: Syringe },
@@ -106,7 +106,7 @@ export const ReportEditor: React.FC<ReportEditorProps> = ({
         setSaveState('saved');
         setLastSavedAt(now);
         setTimeout(() => setSaveState('idle'), 2000);
-      } catch (err) {
+      } catch {
         setSaveState('error');
       }
     }, 1200);

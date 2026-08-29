@@ -27,7 +27,7 @@ export const ProcedureSection: React.FC<ProcedureSectionProps> = ({ report, onCh
             type="text"
             value={report.procedureName}
             onChange={(e) => onChange({ procedureName: e.target.value })}
-            placeholder="e.g. Flexible Fiberoptic Bronchoscopy"
+            placeholder="e.g. Flexible Bronchoscopy"
             className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors font-medium"
           />
         </div>

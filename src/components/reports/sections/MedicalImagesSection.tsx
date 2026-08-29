@@ -47,7 +47,7 @@ export const MedicalImagesSection: React.FC<MedicalImagesSectionProps> = ({ repo
           createdAt: new Date().toISOString(),
         };
         newImages.push(imageObj);
-      } catch (err) {
+      } catch {
         setErrorMsg('Failed to process image upload.');
       }
     }

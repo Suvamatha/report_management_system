@@ -14,7 +14,7 @@ import {
   ImageRun,
 } from 'docx';
 import { saveAs } from 'file-saver';
-import type { Report, HospitalProfile, DoctorProfile } from '../../types';
+import type { Report, HospitalProfile, DoctorProfile, MedicalImage } from '../../types';
 import { auditService } from '../storage/auditService';
 
 function base64ToUint8Array(base64: string): Uint8Array {
@@ -169,7 +169,7 @@ export async function exportReportToDocx(
                         children: [
                           new TextRun({ text: 'Age / Gender: ', bold: true, size: 20 }),
                           new TextRun({
-                            text: `${report.patientAge} Y / ${report.patientGender}`,
+                            text: `${report.patientAge || '—'} / ${report.patientGender}`,
                             size: 20,
                           }),
                         ],
@@ -303,7 +303,7 @@ export async function exportReportToDocx(
               new TableRow({
                 children: [
                   new TableCell({
-                    width: { size: 35, type: WidthType.PERCENTAGE },
+                    width: { size: 65, type: WidthType.PERCENTAGE },
                     children: [
                       new Paragraph({
                         children: [
@@ -313,21 +313,11 @@ export async function exportReportToDocx(
                     ],
                   }),
                   new TableCell({
-                    width: { size: 25, type: WidthType.PERCENTAGE },
+                    width: { size: 35, type: WidthType.PERCENTAGE },
                     children: [
                       new Paragraph({
                         children: [
                           new TextRun({ text: 'Status', bold: true, color: '0F172A' }),
-                        ],
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: { size: 40, type: WidthType.PERCENTAGE },
-                    children: [
-                      new Paragraph({
-                        children: [
-                          new TextRun({ text: 'Detailed Findings', bold: true, color: '0F172A' }),
                         ],
                       }),
                     ],
@@ -354,13 +344,6 @@ export async function exportReportToDocx(
                           }),
                         ],
                       }),
-                      new TableCell({
-                        children: [
-                          new Paragraph({
-                            children: [new TextRun({ text: f.customText || 'Normal appearance' })],
-                          }),
-                        ],
-                      }),
                     ],
                   })
               ),
@@ -382,59 +365,8 @@ export async function exportReportToDocx(
             spacing: { before: 200, after: 100 },
           }),
 
-          // BAL
           new Paragraph({
-            children: [
-              new TextRun({ text: '• Bronchoalveolar Lavage (BAL): ', bold: true }),
-              new TextRun({ text: report.bal.done ? 'DONE' : 'Not Performed', bold: true, color: report.bal.done ? '0284C7' : '64748B' }),
-              ...(report.bal.done
-                ? [
-                    new TextRun({ text: ` | Site: ${report.bal.sampleSite || 'Standard'} | Tests: ${report.bal.specimenTests || 'Cytology, AFB, Culture'} ${report.bal.notes ? `(${report.bal.notes})` : ''}` }),
-                  ]
-                : []),
-            ],
-            spacing: { after: 60 },
-          }),
-
-          // Biopsy
-          new Paragraph({
-            children: [
-              new TextRun({ text: '• Endobronchial Biopsy: ', bold: true }),
-              new TextRun({ text: report.endobronchialBiopsy.done ? 'DONE' : 'Not Performed', bold: true, color: report.endobronchialBiopsy.done ? '0284C7' : '64748B' }),
-              ...(report.endobronchialBiopsy.done
-                ? [
-                    new TextRun({ text: ` | Site: ${report.endobronchialBiopsy.site || 'Lobe segment'} | Specimen: ${report.endobronchialBiopsy.specimenNotes || 'Sent for histopathology'}` }),
-                  ]
-                : []),
-            ],
-            spacing: { after: 60 },
-          }),
-
-          // TBNA
-          new Paragraph({
-            children: [
-              new TextRun({ text: '• Conventional TBNA: ', bold: true }),
-              new TextRun({ text: report.conventionalTbna.done ? 'DONE' : 'Not Performed', bold: true, color: report.conventionalTbna.done ? '0284C7' : '64748B' }),
-              ...(report.conventionalTbna.done
-                ? [
-                    new TextRun({ text: ` | Station: ${report.conventionalTbna.stationSite || 'Subcarinal station'} | Tests: ${report.conventionalTbna.specimenTests || 'Cytology'} ${report.conventionalTbna.notes ? `(${report.conventionalTbna.notes})` : ''}` }),
-                  ]
-                : []),
-            ],
-            spacing: { after: 60 },
-          }),
-
-          // Brushing
-          new Paragraph({
-            children: [
-              new TextRun({ text: '• Bronchial Brushing: ', bold: true }),
-              new TextRun({ text: report.brushing.done ? 'DONE' : 'Not Performed', bold: true, color: report.brushing.done ? '0284C7' : '64748B' }),
-              ...(report.brushing.done
-                ? [
-                    new TextRun({ text: ` | Site: ${report.brushing.site || 'Target segment'} ${report.brushing.notes ? `(${report.brushing.notes})` : ''}` }),
-                  ]
-                : []),
-            ],
+            children: [new TextRun({ text: report.interventionsText || 'No interventions or samples recorded.' })],
             spacing: { after: 200 },
           }),
 
@@ -574,7 +506,7 @@ export async function exportReportToDocx(
   );
 }
 
-function createDocxImageParagraphs(images: any[]): Paragraph[] {
+function createDocxImageParagraphs(images: MedicalImage[]): Paragraph[] {
   const paragraphs: Paragraph[] = [];
 
   for (let i = 0; i < images.length; i++) {

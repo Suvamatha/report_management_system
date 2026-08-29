@@ -92,6 +92,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       endobronchialBiopsy: { done: false, site: '', specimenNotes: '' },
       conventionalTbna: { done: false, stationSite: '', specimenTests: '', notes: '' },
       brushing: { done: false, site: '', notes: '' },
+      interventionsText: '',
       impression: '',
       advice: '1. Observe for 2 hours post-procedure.\n2. NPO for 2 hours until gag reflex recovers.',
       images: [],
@@ -122,7 +123,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         await backupService.restoreBackup(json);
         alert('Database restored successfully from backup!');
         loadData();
-      } catch (err) {
+      } catch {
         alert('Failed to restore backup file. Invalid format.');
       }
     };

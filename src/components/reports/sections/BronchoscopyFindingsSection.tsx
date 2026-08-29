@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Eye, CheckCircle2 } from 'lucide-react';
 import type { Report, FindingType, AnatomicalLocation } from '../../../types';
 import { Button } from '../../ui/Button';
 
@@ -20,16 +20,6 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
           findingType: newType,
           customText: newType === 'Normal' ? '' : f.customText,
         };
-      }
-      return f;
-    });
-    onChange({ findings: updatedFindings });
-  };
-
-  const handleCustomTextChange = (location: AnatomicalLocation, text: string) => {
-    const updatedFindings = report.findings.map((f) => {
-      if (f.anatomicalLocation === location) {
-        return { ...f, customText: text };
       }
       return f;
     });
@@ -124,7 +114,7 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
                 </div>
               </div>
 
-              {(isAbnormal || item.customText) && (
+              {/* {(isAbnormal || item.customText) && (
                 <div className="mt-3 pt-3 border-t border-slate-200/70">
                   <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
                     <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
@@ -140,7 +130,7 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
                     className="w-full text-xs p-2.5 rounded-lg border border-amber-300 bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>
-              )}
+              )} */}
             </div>
           );
         })}

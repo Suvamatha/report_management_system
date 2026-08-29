@@ -8,6 +8,7 @@ import { DoctorProfilesModal } from './components/settings/DoctorProfilesModal';
 import { TemplatesModal } from './components/templates/TemplatesModal';
 import { AuditLogsModal } from './components/audit/AuditLogsModal';
 import { reportRepository } from './services/storage/reportRepository';
+import type { ReportTemplate } from './types';
 
 export const App: React.FC = () => {
   const [view, setView] = useState<'dashboard' | 'editor'>('dashboard');
@@ -29,7 +30,7 @@ export const App: React.FC = () => {
     setView('editor');
   };
 
-  const handleApplyTemplate = async (template: any) => {
+  const handleApplyTemplate = async (template: ReportTemplate) => {
     if (!activeReportId) return;
     const currentReport = await reportRepository.getById(activeReportId);
     if (!currentReport) return;

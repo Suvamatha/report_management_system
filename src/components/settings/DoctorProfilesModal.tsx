@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, Eraser, FilePen, Upload } from 'lucide-react';
+import { Plus, Trash2, Eraser } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import type { DoctorProfile } from '../../types';
@@ -78,7 +78,6 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // Canvas Drawing Handlers
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
     const canvas = canvasRef.current;

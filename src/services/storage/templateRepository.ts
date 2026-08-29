@@ -5,7 +5,7 @@ const defaultLocations: AnatomicalLocation[] = [
   'Vocal Cord',
   'Trachea',
   'Carina',
-  'Tracheobronchial Tree',
+  // 'Tracheobronchial Tree',
   'Right Upper Lobe',
   'Right Middle Lobe',
   'Right Lower Lobe',

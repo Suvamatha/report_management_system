@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import type { Report, DoctorProfile } from '../../../types';
 import { doctorRepository } from '../../../services/storage/doctorRepository';
@@ -10,19 +10,24 @@ interface VisitSectionProps {
 
 export const VisitSection: React.FC<VisitSectionProps> = ({ report, onChange }) => {
   const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     doctorRepository.getAll().then((list) => {
       setDoctors(list);
       if (!report.doctorId && list.length > 0) {
         const defaultDoc = list.find((d) => d.isDefault) || list[0];
-        onChange({
+        onChangeRef.current({
           doctorId: defaultDoc.id,
           consultedBy: defaultDoc.name,
         });
       }
     });
-  }, []);
+  }, [report.doctorId]);
 
   const handleDoctorChange = (docId: string) => {
     const doc = doctors.find((d) => d.id === docId);
