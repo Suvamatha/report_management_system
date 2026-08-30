@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, CheckCircle2 } from 'lucide-react';
+import { Eye, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
 import type { Report, FindingType, AnatomicalLocation } from '../../../types';
 import { Button } from '../../ui/Button';
 
@@ -7,6 +7,17 @@ interface BronchoscopyFindingsSectionProps {
   report: Report;
   onChange: (updates: Partial<Report>) => void;
 }
+
+const COMMON_ABNORMAL_SNIPPETS = [
+  'Mucosal erythema & edema',
+  'Endobronchial mass lesion',
+  'Luminal narrowing / stenosis',
+  'Purulent secretions',
+  'Active bleeding / oozing',
+  'Friable mucosa',
+  'Extrinsic compression',
+  'Mucosal infiltration',
+];
 
 export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionProps> = ({
   report,
@@ -24,6 +35,23 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
       return f;
     });
     onChange({ findings: updatedFindings });
+  };
+
+  const handleCustomTextChange = (location: AnatomicalLocation, customText: string) => {
+    const updatedFindings = report.findings.map((f) => {
+      if (f.anatomicalLocation === location) {
+        return { ...f, customText };
+      }
+      return f;
+    });
+    onChange({ findings: updatedFindings });
+  };
+
+  const insertSnippet = (location: AnatomicalLocation, snippet: string) => {
+    const finding = report.findings.find((f) => f.anatomicalLocation === location);
+    const current = finding?.customText || '';
+    const updated = current ? `${current}; ${snippet}` : snippet;
+    handleCustomTextChange(location, updated);
   };
 
   const markAllRemainingNormal = () => {
@@ -76,7 +104,7 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
               key={item.id || item.anatomicalLocation}
               className={`p-4 rounded-xl border transition-all ${
                 isAbnormal
-                  ? 'bg-amber-50/50 border-amber-300 shadow-2xs'
+                  ? 'bg-amber-50/60 border-amber-300 shadow-2xs'
                   : 'bg-slate-50/60 border-slate-200 hover:border-slate-300'
               }`}
             >
@@ -114,23 +142,42 @@ export const BronchoscopyFindingsSection: React.FC<BronchoscopyFindingsSectionPr
                 </div>
               </div>
 
-              {/* {(isAbnormal || item.customText) && (
-                <div className="mt-3 pt-3 border-t border-slate-200/70">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                    Detailed Finding Description for {item.anatomicalLocation}:
-                  </label>
+              {(isAbnormal || item.customText) && (
+                <div className="mt-3 pt-3 border-t border-amber-200/80">
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <label className="block text-xs font-semibold text-amber-900 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>Why is {item.anatomicalLocation} abnormal? (Description / Reason):</span>
+                    </label>
+                  </div>
+
+                  <div className="mb-2 flex flex-wrap items-center gap-1">
+                    <span className="text-[11px] font-medium text-amber-700 flex items-center gap-1 mr-1">
+                      <Sparkles className="w-3 h-3 text-amber-500" /> Quick tags:
+                    </span>
+                    {COMMON_ABNORMAL_SNIPPETS.map((snip) => (
+                      <button
+                        key={snip}
+                        type="button"
+                        onClick={() => insertSnippet(item.anatomicalLocation, snip)}
+                        className="text-[11px] px-2 py-0.5 bg-white hover:bg-amber-100 text-amber-900 rounded border border-amber-300 transition-colors shadow-2xs"
+                      >
+                        + {snip}
+                      </button>
+                    ))}
+                  </div>
+
                   <textarea
                     rows={2}
                     value={item.customText}
                     onChange={(e) =>
                       handleCustomTextChange(item.anatomicalLocation, e.target.value)
                     }
-                    placeholder={`Describe abnormal finding for ${item.anatomicalLocation} (e.g. mucosal hyperemia, mass lesion, stenosis, purulent secretions...)`}
-                    className="w-full text-xs p-2.5 rounded-lg border border-amber-300 bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    placeholder={`Specify why ${item.anatomicalLocation} is abnormal (e.g. mucosal hyperemia, mass lesion, luminal narrowing, purulent secretions...)`}
+                    className="w-full text-xs p-2.5 rounded-lg border border-amber-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 placeholder-slate-400"
                   />
                 </div>
-              )} */}
+              )}
             </div>
           );
         })}

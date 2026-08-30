@@ -119,41 +119,86 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
         </div>
       )}
 
-      {/* Bronchoscopic Findings Table */}
-      <div className="my-4">
+      {/* Bronchoscopic Findings Table - 2 Columns */}
+      <div className="my-4 avoid-break">
         <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1.5">
           Bronchoscopic Anatomical Findings
         </h3>
-        <table className="w-full text-left border-collapse border border-slate-300 text-xs">
-          <thead>
-            <tr className="bg-slate-800 text-white font-semibold">
-              <th className="p-2.5 border border-slate-300 w-2/3">Anatomical Location</th>
-              <th className="p-2.5 border border-slate-300 w-1/3 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.findings.map((f, i) => (
-              <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
-                <td className="p-2.5 border border-slate-200 font-semibold text-slate-900">
-                  {f.anatomicalLocation}
-                </td>
-                <td className="p-2.5 border border-slate-200 text-center">
-                  <span
-                    className={`font-semibold px-2 py-0.5 rounded text-[11px] ${
-                      f.findingType === 'Normal'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-amber-100 text-amber-900'
-                    }`}
-                  >
-                    {f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree'
-                      ? 'Normal TBT'
-                      : f.findingType}
-                  </span>
-                </td>
+        <div className="grid grid-cols-2 gap-3 items-start">
+          {/* Column 1 */}
+          <table className="w-full text-left border-collapse border border-slate-300 text-xs">
+            <thead>
+              <tr className="bg-slate-800 text-white font-semibold">
+                <th className="p-2 border border-slate-300">Anatomical Location</th>
+                <th className="p-2 border border-slate-300 w-24 text-center">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {report.findings.slice(0, Math.ceil(report.findings.length / 2)).map((f, i) => (
+                <tr key={f.id || f.anatomicalLocation || i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
+                  <td className="p-2 border border-slate-200">
+                    <div className="font-semibold text-slate-900">{f.anatomicalLocation}</div>
+                    {f.findingType !== 'Normal' && f.customText && (
+                      <div className="text-[11px] text-amber-900 font-normal mt-0.5 leading-tight">
+                        {f.customText}
+                      </div>
+                    )}
+                  </td>
+                  <td className="p-2 border border-slate-200 text-center align-top">
+                    <span
+                      className={`inline-block font-semibold px-2 py-0.5 rounded text-[11px] ${
+                        f.findingType === 'Normal'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-900'
+                      }`}
+                    >
+                      {f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree'
+                        ? 'Normal TBT'
+                        : f.findingType}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Column 2 */}
+          <table className="w-full text-left border-collapse border border-slate-300 text-xs">
+            <thead>
+              <tr className="bg-slate-800 text-white font-semibold">
+                <th className="p-2 border border-slate-300">Anatomical Location</th>
+                <th className="p-2 border border-slate-300 w-24 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.findings.slice(Math.ceil(report.findings.length / 2)).map((f, i) => (
+                <tr key={f.id || f.anatomicalLocation || i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
+                  <td className="p-2 border border-slate-200">
+                    <div className="font-semibold text-slate-900">{f.anatomicalLocation}</div>
+                    {f.findingType !== 'Normal' && f.customText && (
+                      <div className="text-[11px] text-amber-900 font-normal mt-0.5 leading-tight">
+                        {f.customText}
+                      </div>
+                    )}
+                  </td>
+                  <td className="p-2 border border-slate-200 text-center align-top">
+                    <span
+                      className={`inline-block font-semibold px-2 py-0.5 rounded text-[11px] ${
+                        f.findingType === 'Normal'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-900'
+                      }`}
+                    >
+                      {f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree'
+                        ? 'Normal TBT'
+                        : f.findingType}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Medical images are shown before the procedure notes as requested. */}

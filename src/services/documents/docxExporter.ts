@@ -329,14 +329,30 @@ export async function exportReportToDocx(
                   new TableRow({
                     children: [
                       new TableCell({
-                        children: [new Paragraph({ children: [new TextRun({ text: f.anatomicalLocation, bold: true })] })],
+                        children: [
+                          new Paragraph({ children: [new TextRun({ text: f.anatomicalLocation, bold: true })] }),
+                          ...(f.findingType !== 'Normal' && f.customText
+                            ? [
+                                new Paragraph({
+                                  children: [
+                                    new TextRun({
+                                      text: f.customText,
+                                      italics: true,
+                                      size: 18,
+                                      color: 'B45309',
+                                    }),
+                                  ],
+                                }),
+                              ]
+                            : []),
+                        ],
                       }),
                       new TableCell({
                         children: [
                           new Paragraph({
                             children: [
                               new TextRun({
-                                text: f.findingType,
+                                text: f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree' ? 'Normal TBT' : f.findingType,
                                 bold: f.findingType !== 'Normal',
                                 color: f.findingType === 'Normal' ? '166534' : 'C2410C',
                               }),
