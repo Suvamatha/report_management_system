@@ -142,11 +142,6 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
       </section>
 
       <footer className="report-footer report-keep-together">
-        <div className="report-metadata">
-          <p><strong>Report no.</strong> {report.reportNumber}</p>
-          <p><strong>Procedure date</strong> {report.visitDate || '—'}</p>
-          <p><strong>Status</strong> {report.status}</p>
-        </div>
         <div className="consultant-block">
           {doctor?.signatureUrl && <img src={doctor.signatureUrl} alt="Consultant signature" />}
           <p className="consultant-name">{doctor?.name || report.consultedBy || '—'}</p>
