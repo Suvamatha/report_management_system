@@ -1,11 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import type { Report, HospitalProfile, DoctorProfile } from '../../types';
-import { hospitalRepository } from '../../services/storage/hospitalRepository';
+import type { BronchoscopyFinding, DoctorProfile, HospitalProfile, Report } from '../../types';
 import { doctorRepository } from '../../services/storage/doctorRepository';
+import { hospitalRepository } from '../../services/storage/hospitalRepository';
 
 interface MedicalReportPreviewProps {
   report: Report;
 }
+
+const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <h3 className="report-section-title">{children}</h3>
+);
+
+const FindingsTable: React.FC<{ findings: BronchoscopyFinding[] }> = ({ findings }) => (
+  <table className="findings-table">
+    <thead>
+      <tr>
+        <th>Anatomical location</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {findings.map((finding) => (
+        <tr key={finding.id || finding.anatomicalLocation}>
+          <td>
+            <span className="finding-location">{finding.anatomicalLocation}</span>
+          </td>
+          <td>
+            <span className={`finding-status ${finding.findingType === 'Normal' ? 'is-normal' : 'is-abnormal'}`}>
+              {finding.findingType !== 'Normal' && finding.customText
+                ? finding.customText
+                : finding.findingType === 'Normal' && finding.anatomicalLocation === 'Tracheobronchial Tree'
+                  ? 'Normal TBT'
+                  : finding.findingType}
+            </span>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
 
 export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ report }) => {
   const [hospital, setHospital] = useState<HospitalProfile | null>(null);
@@ -13,275 +46,114 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
 
   useEffect(() => {
     hospitalRepository.getProfile().then(setHospital);
-    if (report.doctorId) {
-      doctorRepository.getById(report.doctorId).then(setDoctor);
-    }
+    if (report.doctorId) doctorRepository.getById(report.doctorId).then(setDoctor);
   }, [report.doctorId]);
 
-  if (!hospital) return <div className="p-8 text-center text-slate-500">Loading Report Preview...</div>;
+  if (!hospital) return <div className="p-8 text-center text-slate-500">Loading report preview...</div>;
+
+  const findingSplit = Math.ceil(report.findings.length / 2);
+  const imageCount = report.images.length;
+  const imageColumns = imageCount <= 4 ? Math.max(imageCount, 1) : 5;
+  const imageHeight = imageCount <= 5 ? '26mm' : imageCount <= 10 ? '20mm' : '17mm';
 
   return (
-    <div className="a4-container bg-white text-slate-900 shadow-2xl rounded-xl border border-slate-300 max-w-[210mm] mx-auto p-[15mm] my-6 font-sans text-xs leading-relaxed relative print:shadow-none print:border-none print:m-0 print:p-0">
-      {/* Hospital Header */}
-      <div className="border-b-2 border-slate-900 pb-4 mb-4 text-center">
-        <h1 className="text-xl font-bold uppercase tracking-wide text-slate-900">
-          {hospital.name}
-        </h1>
-        <h2 className="text-sm font-semibold text-sky-700 mt-0.5">
-          {hospital.department}
-        </h2>
-        <p className="text-[11px] text-slate-600 mt-0.5">
-          {hospital.address} | Phone: {hospital.contactPhone}
-        </p>
-      </div>
+    <article className="a4-container report-document bg-white text-slate-900 shadow-xl border border-slate-300 max-w-[210mm] mx-auto my-4 font-sans">
+      <header className="report-header">
+        <h1>{hospital.name}</h1>
+        <p className="report-department">{hospital.department}</p>
+        <p className="report-contact">{hospital.address} &nbsp;|&nbsp; Phone: {hospital.contactPhone}</p>
+      </header>
 
-      {/* Report Title Badge */}
-      <div className="text-center my-3">
-        <span className="inline-block bg-slate-900 text-white font-bold text-xs uppercase px-4 py-1 rounded-md tracking-wider">
-          {report.procedureName || 'Digital Bronchoscopy Report'}
-        </span>
-      </div>
+      <div className="report-title">{report.procedureName || 'Flexible Fiberoptic Bronchoscopy'}</div>
 
-      {/* Patient & Visit Metadata Grid */}
-      <div className="border border-slate-300 rounded-lg p-3 my-3 bg-slate-50/50 grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
-        <div>
-          <span className="font-semibold text-slate-500 w-24 inline-block">Patient ID:</span>
-          <span className="font-bold font-mono text-slate-900">{report.patientId}</span>
-        </div>
-        <div>
-          <span className="font-semibold text-slate-500 w-24 inline-block">Visit Date:</span>
-          <span className="font-medium text-slate-900">{report.visitDate}</span>
-        </div>
-        <div>
-          <span className="font-semibold text-slate-500 w-24 inline-block">Patient Name:</span>
-          <span className="font-bold text-slate-900">{report.patientName}</span>
-        </div>
-        <div>
-          <span className="font-semibold text-slate-500 w-24 inline-block">Referred By:</span>
-          <span className="font-medium text-slate-900">{report.referredBy || '—'}</span>
-        </div>
-        <div>
-            <span className="font-semibold text-slate-500 w-24 inline-block">Age / Gender:</span>
-            <span className="font-medium text-slate-900">
-              {report.patientAge || '—'} / {report.patientGender}
-          </span>
-        </div>
-        <div>
-          <span className="font-semibold text-slate-500 w-24 inline-block">Consulted By:</span>
-          <span className="font-bold text-slate-900">{report.consultedBy || doctor?.name || '—'}</span>
-        </div>
-      </div>
+      <section className="report-info-card report-keep-together" aria-label="Patient and visit information">
+        <div><span>Patient ID</span><strong>{report.patientId || '—'}</strong></div>
+        <div><span>Visit date</span><strong>{report.visitDate || '—'}</strong></div>
+        <div><span>Patient name</span><strong>{report.patientName || '—'}</strong></div>
+        <div><span>Referred by</span><strong>{report.referredBy || '—'}</strong></div>
+        <div><span>Age / Gender</span><strong>{report.patientAge || '—'} / {report.patientGender}</strong></div>
+        <div><span>Consulted by</span><strong>{report.consultedBy || doctor?.name || '—'}</strong></div>
+      </section>
 
-      {/* Procedure Information */}
-      <div className="border border-slate-200 rounded-lg p-3 my-3 bg-white space-y-1">
-        <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1 border-b border-slate-100 pb-1">
-          Procedure Details
-        </h3>
-        <div className="grid grid-cols-3 gap-2">
-          <div>
-            <span className="font-semibold text-slate-500 block">Premedication:</span>
-            <span className="text-slate-800">{report.premedication || 'None'}</span>
-          </div>
-          <div>
-            <span className="font-semibold text-slate-500 block">Sedation:</span>
-            <span className="text-slate-800">{report.sedation || 'None'}</span>
-          </div>
-          <div>
-            <span className="font-semibold text-slate-500 block">Route:</span>
-            <span className="text-slate-800">
-              {report.route === 'Other' ? report.routeCustom || 'Other' : report.route}
-            </span>
-          </div>
+      <section className="report-procedure report-keep-together">
+        <SectionTitle>Procedure details</SectionTitle>
+        <div className="procedure-grid">
+          <div><span>Premedication</span><strong>{report.premedication || 'None'}</strong></div>
+          <div><span>Sedation</span><strong>{report.sedation || 'None'}</strong></div>
+          <div><span>Route</span><strong>{report.route === 'Other' ? report.routeCustom || 'Other' : report.route}</strong></div>
         </div>
-      </div>
+      </section>
 
-      {/* CT Findings */}
-      {report.ctFindings && (
-        <div className="my-3">
-          <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1">
-            Radiological Findings
-          </h3>
-          <p className="text-slate-800 bg-slate-50 p-2.5 rounded-lg border border-slate-200 whitespace-pre-wrap">
-            {report.ctFindings}
-          </p>
+      <section className="clinical-grid report-keep-together">
+        <div className="clinical-card">
+          <SectionTitle>Clinical indication</SectionTitle>
+          <p className={report.indication ? '' : 'is-empty'}>{report.indication || 'No clinical indication recorded.'}</p>
         </div>
-      )}
-
-      {/* Clinical Indication */}
-      {report.indication && (
-        <div className="my-3">
-          <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1">
-            Clinical Indication
-          </h3>
-          <p className="text-slate-800 bg-slate-50 p-2.5 rounded-lg border border-slate-200 whitespace-pre-wrap">
-            {report.indication}
-          </p>
+        <div className="clinical-card">
+          <SectionTitle>Radiological findings</SectionTitle>
+          <p className={report.ctFindings ? '' : 'is-empty'}>{report.ctFindings || 'No radiological findings recorded.'}</p>
         </div>
-      )}
+      </section>
 
-      {/* Bronchoscopic Findings Table - 2 Columns */}
-      <div className="my-4 avoid-break">
-        <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1.5">
-          Bronchoscopic Anatomical Findings
-        </h3>
-        <div className="grid grid-cols-2 gap-3 items-start">
-          {/* Column 1 */}
-          <table className="w-full text-left border-collapse border border-slate-300 text-xs">
-            <thead>
-              <tr className="bg-slate-800 text-white font-semibold">
-                <th className="p-2 border border-slate-300">Anatomical Location</th>
-                <th className="p-2 border border-slate-300 w-24 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.findings.slice(0, Math.ceil(report.findings.length / 2)).map((f, i) => (
-                <tr key={f.id || f.anatomicalLocation || i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
-                  <td className="p-2 border border-slate-200">
-                    <div className="font-semibold text-slate-900">{f.anatomicalLocation}</div>
-                    {f.findingType !== 'Normal' && f.customText && (
-                      <div className="text-[11px] text-amber-900 font-normal mt-0.5 leading-tight">
-                        {f.customText}
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-2 border border-slate-200 text-center align-top">
-                    <span
-                      className={`inline-block font-semibold px-2 py-0.5 rounded text-[11px] ${
-                        f.findingType === 'Normal'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-amber-100 text-amber-900'
-                      }`}
-                    >
-                      {f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree'
-                        ? 'Normal TBT'
-                        : f.findingType}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Column 2 */}
-          <table className="w-full text-left border-collapse border border-slate-300 text-xs">
-            <thead>
-              <tr className="bg-slate-800 text-white font-semibold">
-                <th className="p-2 border border-slate-300">Anatomical Location</th>
-                <th className="p-2 border border-slate-300 w-24 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.findings.slice(Math.ceil(report.findings.length / 2)).map((f, i) => (
-                <tr key={f.id || f.anatomicalLocation || i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
-                  <td className="p-2 border border-slate-200">
-                    <div className="font-semibold text-slate-900">{f.anatomicalLocation}</div>
-                    {f.findingType !== 'Normal' && f.customText && (
-                      <div className="text-[11px] text-amber-900 font-normal mt-0.5 leading-tight">
-                        {f.customText}
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-2 border border-slate-200 text-center align-top">
-                    <span
-                      className={`inline-block font-semibold px-2 py-0.5 rounded text-[11px] ${
-                        f.findingType === 'Normal'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-amber-100 text-amber-900'
-                      }`}
-                    >
-                      {f.findingType === 'Normal' && f.anatomicalLocation === 'Tracheobronchial Tree'
-                        ? 'Normal TBT'
-                        : f.findingType}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <section className="report-section report-keep-together">
+        <SectionTitle>Bronchoscopic anatomical findings</SectionTitle>
+        <div className="findings-grid">
+          <FindingsTable findings={report.findings.slice(0, findingSplit)} />
+          <FindingsTable findings={report.findings.slice(findingSplit)} />
         </div>
-      </div>
+      </section>
 
-      {/* Medical images are shown before the procedure notes as requested. */}
-      {report.images && report.images.length > 0 && (
-        <div className="my-5 avoid-break">
-          <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-2 border-b border-slate-200 pb-1">
-            Medical Bronchoscopy Images
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {report.images.map((img, idx) => (
-              <div key={img.id} className="border border-slate-300 rounded overflow-hidden bg-slate-900">
-                <div className="aspect-4/3 flex items-center justify-center overflow-hidden">
+      {imageCount > 0 && (
+        <section className="report-section report-images">
+          <SectionTitle>Medical bronchoscopy images</SectionTitle>
+          <div className="image-grid" style={{ gridTemplateColumns: `repeat(${imageColumns}, minmax(0, 1fr))` }}>
+            {report.images.map((image, index) => (
+              <figure key={image.id} className="report-image">
+                <div className="report-image-frame" style={{ height: imageHeight }}>
                   <img
-                    src={img.dataUrl}
-                    alt={img.label || `Bronchoscopy image ${idx + 1}`}
-                    style={{ transform: `rotate(${img.rotation}deg)` }}
-                    className="max-h-full max-w-full object-contain"
+                    src={image.dataUrl}
+                    alt={image.label || `Bronchoscopy image ${index + 1}`}
+                    style={{ transform: `rotate(${image.rotation}deg)` }}
                   />
                 </div>
-                <div className="p-1.5 bg-white border-t border-slate-200 text-center">
-                  <p className="text-[10px] font-semibold text-slate-800 truncate">
-                    Fig {idx + 1}: {img.label || 'Bronchoscopy View'}
-                  </p>
-                </div>
-              </div>
+                <figcaption>Fig. {index + 1}{image.label ? ` · ${image.label}` : ''}</figcaption>
+              </figure>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Interventions & Samples */}
-      <div className="my-4">
-        <h3 className="text-xs font-bold uppercase text-sky-800 tracking-wider mb-1.5">
-          Interventions & Sample Collection
-        </h3>
-        <p className="min-h-12 rounded-lg border border-slate-200 bg-slate-50 p-3 text-slate-800 whitespace-pre-wrap">
+      <section className="report-section report-keep-together">
+        <SectionTitle>Interventions &amp; sample collection</SectionTitle>
+        <p className={`report-text-block ${report.interventionsText ? '' : 'is-empty'}`}>
           {report.interventionsText || 'No interventions or samples recorded.'}
         </p>
-      </div>
+      </section>
 
-      {/* IMPRESSION */}
-      <div className="my-4 p-3 bg-sky-50/70 border border-sky-300 rounded-lg">
-        <h3 className="text-xs font-bold uppercase text-sky-900 tracking-wider mb-1">
-          Impression
-        </h3>
-        <p className="text-slate-900 font-medium whitespace-pre-wrap">
-          {report.impression || 'No impression entered.'}
-        </p>
-      </div>
-
-      {/* ADVICE */}
-      <div className="my-4 p-3 bg-slate-50 border border-slate-300 rounded-lg">
-        <h3 className="text-xs font-bold uppercase text-slate-800 tracking-wider mb-1">
-          Advice
-        </h3>
-        <p className="text-slate-800 whitespace-pre-wrap">
-          {report.advice || 'Standard post-bronchoscopy care.'}
-        </p>
-      </div>
-
-      {/* Doctor Sign-off Footer Block */}
-      <div className="mt-8 pt-4 border-t-2 border-slate-900 flex items-end justify-between avoid-break">
-        <div>
-          <p className="text-[10px] text-slate-500 font-mono">Report ID: {report.reportNumber}</p>
-          <p className="text-[10px] text-slate-500">Status: {report.status.toUpperCase()}</p>
-          <p className="text-[10px] text-slate-400 mt-1">Generated by Digital Bronchoscopy System</p>
+      <section className="impression-grid report-keep-together">
+        <div className="impression-card">
+          <SectionTitle>Impression</SectionTitle>
+          <p>{report.impression || 'No impression entered.'}</p>
         </div>
-
-        <div className="text-right">
-          {doctor?.signatureUrl ? (
-            <img
-              src={doctor.signatureUrl}
-              alt="Doctor Signature"
-              className="h-10 ml-auto object-contain mb-1"
-            />
-          ) : (
-            <div className="h-8" />
-          )}
-          <p className="text-xs font-bold text-slate-900">{doctor?.name || report.consultedBy}</p>
-          <p className="text-[11px] text-slate-600">{doctor?.designation || 'Consultant Pulmonologist'}</p>
-          <p className="text-[10px] text-slate-500">{doctor?.credentials || 'MD, DM Pulmonology'}</p>
+        <div className="advice-card">
+          <SectionTitle>Advice</SectionTitle>
+          <p>{report.advice || 'Standard post-bronchoscopy care.'}</p>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <footer className="report-footer report-keep-together">
+        <div className="report-metadata">
+          <p><strong>Report no.</strong> {report.reportNumber}</p>
+          <p><strong>Procedure date</strong> {report.visitDate || '—'}</p>
+          <p><strong>Status</strong> {report.status}</p>
+        </div>
+        <div className="consultant-block">
+          {doctor?.signatureUrl && <img src={doctor.signatureUrl} alt="Consultant signature" />}
+          <p className="consultant-name">{doctor?.name || report.consultedBy || '—'}</p>
+          <p>{doctor?.designation || 'Consultant Pulmonologist'}</p>
+          <p>{doctor?.credentials || 'MD, DM Pulmonology'}</p>
+        </div>
+      </footer>
+    </article>
   );
 };

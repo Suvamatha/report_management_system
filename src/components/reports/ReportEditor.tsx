@@ -146,7 +146,7 @@ export const ReportEditor: React.FC<ReportEditorProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
+    <div className="report-editor-page min-h-screen bg-slate-100 flex flex-col">
       {/* Action Header */}
       <header className="sticky top-0 z-30 bg-slate-900 text-white shadow-md no-print">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
@@ -254,51 +254,51 @@ export const ReportEditor: React.FC<ReportEditorProps> = ({
       </header>
 
       {/* Content Workspace */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {isPreview ? (
-          <div className="lg:col-span-12">
-            <MedicalReportPreview report={report} />
-          </div>
-        ) : (
-          <>
-            <aside className="lg:col-span-3 hidden lg:block sticky top-20 h-fit space-y-1 bg-white p-3 rounded-xl border border-slate-200 shadow-xs editor-sidebar no-print">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 block mb-2">
-                Report Sections
-              </span>
-              {SECTIONS.map((sec) => {
-                const Icon = sec.icon;
-                const isActive = activeSection === sec.id;
-                return (
-                  <button
-                    key={sec.id}
-                    onClick={() => scrollToSection(sec.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2.5 transition-all ${
-                      isActive
-                        ? 'bg-sky-50 text-sky-700 font-semibold border-l-4 border-sky-600'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-sky-600' : 'text-slate-400'}`} />
-                    <span>{sec.label}</span>
-                  </button>
-                );
-              })}
-            </aside>
+      <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 print:p-0 print:m-0 print:max-w-none">
+        {/* Editor Form View (Visible on screen when not preview, hidden during print) */}
+        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 w-full ${isPreview ? 'hidden' : 'print:hidden'}`}>
+          <aside className="lg:col-span-3 hidden lg:block sticky top-20 h-fit space-y-1 bg-white p-3 rounded-xl border border-slate-200 shadow-xs editor-sidebar no-print">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 block mb-2">
+              Report Sections
+            </span>
+            {SECTIONS.map((sec) => {
+              const Icon = sec.icon;
+              const isActive = activeSection === sec.id;
+              return (
+                <button
+                  key={sec.id}
+                  onClick={() => scrollToSection(sec.id)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2.5 transition-all ${
+                    isActive
+                      ? 'bg-sky-50 text-sky-700 font-semibold border-l-4 border-sky-600'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-sky-600' : 'text-slate-400'}`} />
+                  <span>{sec.label}</span>
+                </button>
+              );
+            })}
+          </aside>
 
-            <main className="lg:col-span-9 space-y-6">
-              <PatientSection report={report} onChange={handleReportChange} />
-              <VisitSection report={report} onChange={handleReportChange} />
-              <ProcedureSection report={report} onChange={handleReportChange} />
-              <CTFindingsSection report={report} onChange={handleReportChange} />
-              <IndicationSection report={report} onChange={handleReportChange} />
-              <BronchoscopyFindingsSection report={report} onChange={handleReportChange} />
-              <InterventionsSection report={report} onChange={handleReportChange} />
-              <MedicalImagesSection report={report} onChange={handleReportChange} />
-              <ImpressionAdviceSection report={report} onChange={handleReportChange} />
-              <DoctorSection report={report} />
-            </main>
-          </>
-        )}
+          <main className="lg:col-span-9 space-y-6">
+            <PatientSection report={report} onChange={handleReportChange} />
+            <VisitSection report={report} onChange={handleReportChange} />
+            <ProcedureSection report={report} onChange={handleReportChange} />
+            <CTFindingsSection report={report} onChange={handleReportChange} />
+            <IndicationSection report={report} onChange={handleReportChange} />
+            <BronchoscopyFindingsSection report={report} onChange={handleReportChange} />
+            <InterventionsSection report={report} onChange={handleReportChange} />
+            <MedicalImagesSection report={report} onChange={handleReportChange} />
+            <ImpressionAdviceSection report={report} onChange={handleReportChange} />
+            <DoctorSection report={report} />
+          </main>
+        </div>
+
+        {/* A4 Preview & Print View (Always printed when window.print is called, visible when isPreview is true) */}
+        <div className={`w-full ${isPreview ? 'block' : 'hidden print:block'}`}>
+          <MedicalReportPreview report={report} />
+        </div>
       </div>
 
       <FinalizeModal

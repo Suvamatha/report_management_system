@@ -52,7 +52,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-900 selection:bg-sky-500 selection:text-white">
+    <div className="app-shell min-h-screen bg-slate-100 font-sans text-slate-900 selection:bg-sky-500 selection:text-white">
       {view === 'dashboard' ? (
         <Dashboard
           onNewReport={(id) => handleOpenReport(id)}

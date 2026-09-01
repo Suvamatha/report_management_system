@@ -13,29 +13,84 @@
   }
 }
 
+/* Report document: intentionally plain and high-contrast for screen, PDF, and grayscale printing. */
+.report-document {
+  width: 100%;
+  padding: 10mm;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.report-header { border-bottom: 1.5px solid #0f172a; padding-bottom: 2.5mm; text-align: center; }
+.report-header h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .025em; text-transform: uppercase; }
+.report-header p { margin: 0; }
+.report-department { color: #075985; font-weight: 700; font-size: 10px; }
+.report-contact { color: #475569; font-size: 9px; }
+.report-title { width: fit-content; margin: 2.5mm auto; padding: 1mm 4mm; background: #0f172a; color: white; border-radius: 2px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.report-info-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5mm 6mm; padding: 2.5mm 3mm; border: 1px solid #cbd5e1; background: #f8fafc; }
+.report-info-card div, .procedure-grid div { min-width: 0; display: flex; gap: 2mm; }
+.report-info-card span, .procedure-grid span { color: #64748b; font-size: 9px; font-weight: 700; white-space: nowrap; }
+.report-info-card strong, .procedure-grid strong { color: #0f172a; font-size: 10px; overflow-wrap: anywhere; }
+.report-procedure, .report-section { margin-top: 2.5mm; }
+.report-procedure { padding: 2mm 3mm; border: 1px solid #dbe4ee; }
+.report-section-title { margin: 0 0 1.2mm; color: #075985; font-size: 9px; font-weight: 800; letter-spacing: .07em; line-height: 1.2; text-transform: uppercase; }
+.procedure-grid, .clinical-grid, .findings-grid, .impression-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2mm; }
+.procedure-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.clinical-grid { margin-top: 2.5mm; }
+.clinical-card, .impression-card, .advice-card { border: 1px solid #cbd5e1; background: #f8fafc; }
+.clinical-card .report-section-title, .impression-card .report-section-title, .advice-card .report-section-title { padding: 1.2mm 2mm; margin: 0; border-bottom: 1px solid #dbeafe; background: #eff6ff; }
+.clinical-card p, .impression-card p, .advice-card p, .report-text-block { margin: 0; padding: 1.8mm 2mm; white-space: pre-wrap; overflow-wrap: anywhere; }
+.is-empty { color: #64748b; font-style: italic; }
+.findings-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+.findings-table th { padding: 1.2mm 1.5mm; background: #1e293b; color: white; font-size: 8px; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
+.findings-table th:last-child, .findings-table td:last-child { width: 27mm; text-align: center; }
+.findings-table td { padding: 1.15mm 1.5mm; border: 1px solid #dbe4ee; vertical-align: top; }
+.findings-table tbody tr:nth-child(even) { background: #f8fafc; }
+.finding-location { display: block; font-weight: 700; }
+.finding-status { display: inline-block; max-width: 100%; padding: .45mm 1.1mm; border: 1px solid currentColor; font-size: 8px; font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.finding-status.is-normal { color: #166534; background: #ecfdf5; }
+.finding-status.is-abnormal { color: #9a3412; background: #fff7ed; }
+.image-grid { display: grid; gap: 1.5mm; }
+.report-image { min-width: 0; margin: 0; border: 1px solid #cbd5e1; background: #fff; break-inside: avoid; }
+.report-image-frame { display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0f172a; }
+.report-image-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.report-image figcaption { overflow: hidden; padding: .8mm 1mm; color: #334155; font-size: 8px; font-weight: 600; line-height: 1.1; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.report-text-block { border: 1px solid #dbe4ee; background: #f8fafc; }
+.impression-grid { margin-top: 2.5mm; }
+.impression-card { border-color: #7dd3fc; background: #f0f9ff; }
+.advice-card { background: #fafafa; }
+.report-footer { display: flex; align-items: end; justify-content: space-between; gap: 6mm; margin-top: 3mm; padding-top: 2.5mm; border-top: 1.5px solid #0f172a; }
+.report-footer p { margin: 0; color: #475569; font-size: 8px; line-height: 1.35; }
+.report-metadata p:first-child { color: #0f172a; }
+.consultant-block { max-width: 55%; text-align: right; }
+.consultant-block img { display: block; width: auto; height: 10mm; max-width: 35mm; margin: 0 0 .7mm auto; object-fit: contain; }
+.consultant-block .consultant-name { color: #0f172a; font-size: 9px; font-weight: 800; }
+
 /* Print CSS */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm 15mm 15mm 15mm;
+    margin: 7mm;
   }
 
-  body {
+  html, body {
     background: white !important;
     color: black !important;
-    font-size: 11pt !important;
-    line-height: 1.3 !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
     margin: 0 !important;
     padding: 0 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
 
   /* Hide interactive application elements during print */
   .no-print,
   nav,
   aside,
-  header.app-header,
+  .report-editor-page > header,
   .btn,
   button,
   .editor-sidebar,
@@ -58,13 +113,44 @@
   }
 
   .a4-container {
-    width: 100% !important;
-    max-width: none !important;
+    width: 196mm !important;
+    max-width: 196mm !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
   }
+
+  .report-document { padding: 0 !important; }
+
+  .report-keep-together,
+  .report-image {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* The editor shell used `min-h-screen` and `flex-1`, which painted a gray
+     empty panel below a short report in the browser's print preview. */
+  .report-editor-page {
+    display: block !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  .report-editor-page > .flex-1 {
+    flex: none !important;
+  }
+
+  /* App.tsx wraps the editor in another full-screen gray shell. Remove that
+     shell only for print so it cannot become an empty gray block on the page. */
+  .app-shell {
+    min-height: 0 !important;
+    background: white !important;
+  }
+
+  #root { min-height: 0 !important; background: white !important; }
 }
 
 /* Custom Scrollbar for editor views */
