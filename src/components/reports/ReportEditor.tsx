@@ -223,7 +223,7 @@ export const ReportEditor: React.FC<ReportEditorProps> = ({
               variant="outline"
               size="sm"
               icon={<Printer className="w-4 h-4 text-slate-700" />}
-              onClick={printReport}
+              onClick={() => printReport(report)}
             >
               Print / PDF
             </Button>

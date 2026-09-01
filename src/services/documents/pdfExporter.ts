@@ -1,7 +1,18 @@
 import type { Report } from '../../types';
 import { auditService } from '../storage/auditService';
 
-export async function printReport(): Promise<void> {
+export async function printReport(report?: Pick<Report, 'reportNumber' | 'procedureName'>): Promise<void> {
+  const previousTitle = document.title;
+  const printTitle = report
+    ? `${report.reportNumber} — ${report.procedureName || 'Bronchoscopy Report'}`
+    : 'Bronchoscopy Report';
+
+  document.title = printTitle;
+  const restoreTitle = () => {
+    document.title = previousTitle;
+  };
+
+  window.addEventListener('afterprint', restoreTitle, { once: true });
   window.print();
 }
 
