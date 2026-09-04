@@ -43,6 +43,7 @@ const FindingsTable: React.FC<{ findings: BronchoscopyFinding[] }> = ({ findings
 export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ report }) => {
   const [hospital, setHospital] = useState<HospitalProfile | null>(null);
   const [doctor, setDoctor] = useState<DoctorProfile | null>(null);
+  const [logoFailed, setLogoFailed] = useState(false);
 
   useEffect(() => {
     hospitalRepository.getProfile().then(setHospital);
@@ -53,15 +54,29 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
 
   const findingSplit = Math.ceil(report.findings.length / 2);
   const imageCount = report.images.length;
-  const imageColumns = imageCount <= 4 ? Math.max(imageCount, 1) : 5;
-  const imageHeight = imageCount <= 5 ? '26mm' : imageCount <= 10 ? '20mm' : '17mm';
+  const logoSrc = hospital.logoUrl || '/logo/logo.png';
 
   return (
     <article className="a4-container report-document bg-white text-slate-900 shadow-xl border border-slate-300 max-w-[210mm] mx-auto my-4 font-sans">
       <header className="report-header">
-        <h1>{hospital.name}</h1>
-        <p className="report-department">{hospital.department}</p>
-        <p className="report-contact">{hospital.address} &nbsp;|&nbsp; Phone: {hospital.contactPhone}</p>
+        <div className="report-header-content">
+          {logoSrc && !logoFailed && (
+            <img
+              src={logoSrc}
+              alt={hospital.name ? `${hospital.name} Logo` : 'Hospital Logo'}
+              className="report-header-logo"
+              onError={() => setLogoFailed(true)}
+            />
+          )}
+          <div className="report-header-text">
+            <h1 className="report-hospital-name">{hospital.name}</h1>
+            <p className="report-department">{hospital.department}</p>
+            <p className="report-contact">{hospital.address} &nbsp;|&nbsp; Phone: {hospital.contactPhone}</p>
+          </div>
+          {logoSrc && !logoFailed && (
+            <div className="report-header-spacer" aria-hidden="true" />
+          )}
+        </div>
       </header>
 
       <div className="report-title">{report.procedureName || 'Flexible Fiberoptic Bronchoscopy'}</div>
@@ -106,13 +121,14 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
       {imageCount > 0 && (
         <section className="report-section report-images">
           <SectionTitle>Medical bronchoscopy images</SectionTitle>
-          <div className="image-grid" style={{ gridTemplateColumns: `repeat(${imageColumns}, minmax(0, 1fr))` }}>
+          <div className="image-grid">
             {report.images.map((image, index) => (
               <figure key={image.id} className="report-image">
-                <div className="report-image-frame" style={{ height: imageHeight }}>
+                <div className="report-image-frame aspect-square w-full bg-black flex items-center justify-center overflow-hidden">
                   <img
                     src={image.dataUrl}
                     alt={image.label || `Bronchoscopy image ${index + 1}`}
+                    className="w-full h-full object-contain block"
                     style={{ transform: `rotate(${image.rotation}deg)` }}
                   />
                 </div>

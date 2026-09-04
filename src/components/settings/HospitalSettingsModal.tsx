@@ -43,6 +43,18 @@ export const HospitalSettingsModal: React.FC<HospitalSettingsModalProps> = ({
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+          <img
+            src={profile.logoUrl || '/logo/logo.png'}
+            alt="Hospital Logo"
+            className="w-12 h-12 object-contain bg-white border border-slate-200 rounded p-1"
+          />
+          <div className="text-xs">
+            <span className="font-semibold text-slate-800 block">Hospital Logo</span>
+            <span className="text-slate-500 text-[11px]">Using official logo from <code className="bg-slate-200 px-1 py-0.5 rounded text-[10px]">public/logo/logo.png</code></span>
+          </div>
+        </div>
+
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">Hospital Name</label>
           <input

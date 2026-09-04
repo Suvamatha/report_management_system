@@ -102,7 +102,7 @@ export async function exportReportToDocx(
               new TextRun({
                 text: hospital.name.toUpperCase(),
                 bold: true,
-                size: 28,
+                size: 32,
                 color: '0F172A',
               }),
             ],
@@ -540,7 +540,7 @@ function createDocxImageParagraphs(images: MedicalImage[]): Paragraph[] {
             new ImageRun({
               data: imgBytes,
               transformation: {
-                width: 280,
+                width: 200,
                 height: 200,
               },
               type: isPng ? 'png' : 'jpg',

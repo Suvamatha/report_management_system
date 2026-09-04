@@ -21,11 +21,16 @@
   line-height: 1.25;
 }
 
-.report-header { border-bottom: 1.5px solid #0f172a; padding-bottom: 2.5mm; text-align: center; }
-.report-header h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .025em; text-transform: uppercase; }
+.report-header { border-bottom: 2px solid #0f172a; padding-bottom: 2.5mm; }
+.report-header-content { display: flex; align-items: center; justify-content: space-between; gap: 4mm; }
+.report-header-logo { height: 22mm; width: 22mm; object-fit: contain; flex-shrink: 0; }
+.report-header-spacer { width: 22mm; flex-shrink: 0; }
+.report-header-text { flex: 1; text-align: center; min-width: 0; }
+.report-header h1,
+.report-hospital-name { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: .025em; line-height: 1.2; text-transform: uppercase; color: #0f172a; }
 .report-header p { margin: 0; }
-.report-department { color: #075985; font-weight: 700; font-size: 10px; }
-.report-contact { color: #475569; font-size: 9px; }
+.report-department { color: #075985; font-weight: 700; font-size: 10.5px; margin-top: 1mm; }
+.report-contact { color: #475569; font-size: 9.5px; margin-top: 0.5mm; }
 .report-title { width: fit-content; margin: 2.5mm auto; padding: 1mm 4mm; background: #0f172a; color: white; border-radius: 2px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 .report-info-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5mm 6mm; padding: 2.5mm 3mm; border: 1px solid #cbd5e1; background: #f8fafc; }
 .report-info-card div, .procedure-grid div { min-width: 0; display: flex; gap: 2mm; }
@@ -50,9 +55,9 @@
 .finding-status { display: inline-block; max-width: 100%; padding: .45mm 1.1mm; border: 1px solid currentColor; font-size: 8px; font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
 .finding-status.is-normal { color: #166534; background: #ecfdf5; }
 .finding-status.is-abnormal { color: #9a3412; background: #fff7ed; }
-.image-grid { display: grid; gap: 1.5mm; }
+.image-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2mm; }
 .report-image { min-width: 0; margin: 0; border: 1px solid #cbd5e1; background: #fff; break-inside: avoid; }
-.report-image-frame { display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0f172a; }
+.report-image-frame { width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; }
 .report-image-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .report-image figcaption { overflow: hidden; padding: .8mm 1mm; color: #334155; font-size: 8px; font-weight: 600; line-height: 1.1; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .report-text-block { border: 1px solid #dbe4ee; background: #f8fafc; }
@@ -124,6 +129,82 @@
   }
 
   .report-document { padding: 0 !important; }
+
+  .report-header {
+    border-bottom: 2px solid #0f172a !important;
+    padding-bottom: 2.5mm !important;
+  }
+
+  .report-header-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 4mm !important;
+  }
+
+  .report-header-logo {
+    height: 22mm !important;
+    width: 22mm !important;
+    max-height: 22mm !important;
+    max-width: 22mm !important;
+    object-fit: contain !important;
+    flex-shrink: 0 !important;
+  }
+
+  .report-header-spacer {
+    width: 22mm !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+  }
+
+  .report-header-text {
+    flex: 1 !important;
+    text-align: center !important;
+  }
+
+  .report-header h1,
+  .report-hospital-name {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: .025em !important;
+    color: #0f172a !important;
+    text-transform: uppercase !important;
+  }
+
+  .report-department {
+    color: #075985 !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+  }
+
+  .report-contact {
+    color: #475569 !important;
+    font-size: 9.5px !important;
+  }
+
+  .image-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 2mm !important;
+  }
+
+  .report-image-frame {
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  .report-image-frame img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
 
   .report-keep-together,
   .report-image {

@@ -8,6 +8,7 @@ export const defaultHospitalProfile: HospitalProfile = {
   name: 'Tribhuvan University Teaching Hospital',
   address: 'Maharajgunj, Kathmandu, Nepal',
   department: 'Department of Pulmonology & Critical Care Medicine',
+  logoUrl: '/logo/logo.png',
   contactPhone: '+977-1-4412404',
   contactEmail: 'pulmonology@tuth.org.np',
   reportPrefix: 'BR-2026-',
@@ -25,6 +26,10 @@ export const hospitalRepository: HospitalRepository = {
     if (!profile) {
       await db.put('hospital', defaultHospitalProfile);
       return defaultHospitalProfile;
+    }
+    if (!profile.logoUrl) {
+      profile.logoUrl = '/logo/logo.png';
+      await db.put('hospital', profile);
     }
     return profile;
   },
