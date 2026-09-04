@@ -124,7 +124,7 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
           <div className="image-grid">
             {report.images.map((image, index) => (
               <figure key={image.id} className="report-image">
-                <div className="report-image-frame aspect-square w-full bg-black flex items-center justify-center overflow-hidden">
+                <div className="report-image-frame w-full bg-black flex items-center justify-center overflow-hidden" style={{ height: '26mm' }}>
                   <img
                     src={image.dataUrl}
                     alt={image.label || `Bronchoscopy image ${index + 1}`}
