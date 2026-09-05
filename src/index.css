@@ -48,7 +48,7 @@
 .is-empty { color: #64748b; font-style: italic; }
 .findings-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
 .findings-table th { padding: 1.2mm 1.5mm; background: #1e293b; color: white; font-size: 8px; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
-.findings-table th:last-child, .findings-table td:last-child { width: 35mm; text-align: center; }
+.findings-table th:last-child, .findings-table td:last-child { width: 65mm; text-align: center; }
 .findings-table td { padding: 1.15mm 1.5mm; border: 1px solid #dbe4ee; vertical-align: top; }
 .findings-table tbody tr:nth-child(even) { background: #f8fafc; }
 .finding-location { display: block; font-weight: 700; }
@@ -185,7 +185,7 @@
 
   .image-grid {
     display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     gap: 2mm !important;
   }
 
