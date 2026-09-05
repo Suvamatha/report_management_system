@@ -42,7 +42,7 @@ export const DoctorSection: React.FC<DoctorSectionProps> = ({ report }) => {
             {selectedDoctor?.designation || 'Consultant Pulmonologist'}
           </p>
           <p className="text-xs text-slate-500 mt-0.5">{selectedDoctor?.credentials || 'MD, DM Pulmonology'}</p>
-          <p className="text-xs text-slate-400">{selectedDoctor?.department || 'Department of Pulmonology'}</p>
+          <p className="text-xs text-slate-400">{selectedDoctor?.department || 'Department of Pediatrics'}</p>
         </div>
 
         <div className="border border-slate-300 rounded-lg p-3 bg-white w-52 text-center shadow-2xs">

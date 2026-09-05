@@ -7,7 +7,7 @@ export const defaultHospitalProfile: HospitalProfile = {
   id: DEFAULT_HOSPITAL_ID,
   name: 'Tribhuvan University Teaching Hospital',
   address: 'Maharajgunj, Kathmandu, Nepal',
-  department: 'Department of Pulmonology & Critical Care Medicine',
+  department: 'Department of Pediatrics & Critical Care Medicine',
   logoUrl: '/logo/logo.png',
   contactPhone: '+977-1-4412404',
   contactEmail: 'pulmonology@tuth.org.np',

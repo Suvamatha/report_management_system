@@ -7,7 +7,7 @@ export const defaultDoctors: DoctorProfile[] = [
     name: 'Dr. Ramesh Sharma',
     designation: 'Senior Consultant Pulmonologist',
     credentials: 'MD, DM (Pulmonary Medicine), FCCP',
-    department: 'Department of Pulmonology',
+    department: 'Department of Pediatrics',
     isDefault: true,
   },
   {
@@ -15,7 +15,7 @@ export const defaultDoctors: DoctorProfile[] = [
     name: 'Dr. Sunita Shrestha',
     designation: 'Associate Professor & Pulmonologist',
     credentials: 'MBBS, MD (Internal Medicine), Fellowship Interventional Pulmonology',
-    department: 'Department of Pulmonology',
+    department: 'Department of Pediatrics',
     isDefault: false,
   },
 ];

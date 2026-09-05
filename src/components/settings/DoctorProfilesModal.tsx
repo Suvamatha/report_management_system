@@ -49,7 +49,7 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
       name: editingDoc.name,
       designation: editingDoc.designation || 'Consultant Pulmonologist',
       credentials: editingDoc.credentials || 'MD',
-      department: editingDoc.department || 'Department of Pulmonology',
+      department: editingDoc.department || 'Department of Pediatrics',
       signatureUrl: finalSig,
       isDefault: editingDoc.isDefault || false,
     };
@@ -149,7 +149,7 @@ export const DoctorProfilesModal: React.FC<DoctorProfilesModalProps> = ({
                   name: '',
                   designation: 'Senior Consultant Pulmonologist',
                   credentials: 'MD, DM Pulmonology',
-                  department: 'Department of Pulmonology',
+                  department: 'Department of Pediatrics',
                 })
               }
             >

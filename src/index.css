@@ -48,11 +48,11 @@
 .is-empty { color: #64748b; font-style: italic; }
 .findings-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
 .findings-table th { padding: 1.2mm 1.5mm; background: #1e293b; color: white; font-size: 8px; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
-.findings-table th:last-child, .findings-table td:last-child { width: 27mm; text-align: center; }
+.findings-table th:last-child, .findings-table td:last-child { width: 22mm; text-align: center; }
 .findings-table td { padding: 1.15mm 1.5mm; border: 1px solid #dbe4ee; vertical-align: top; }
 .findings-table tbody tr:nth-child(even) { background: #f8fafc; }
 .finding-location { display: block; font-weight: 700; }
-.finding-status { display: inline-block; max-width: 100%; padding: .45mm 1.1mm; border: 1px solid currentColor; font-size: 8px; font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.finding-status { display: block; width: 100%; box-sizing: border-box; padding: .45mm 1.1mm; border: 1px solid currentColor; font-size: 8px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; word-break: normal; }
 .finding-status.is-normal { color: #166534; background: #ecfdf5; }
 .finding-status.is-abnormal { color: #9a3412; background: #fff7ed; }
 .image-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2mm; }

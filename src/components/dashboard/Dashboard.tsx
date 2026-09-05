@@ -144,7 +144,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {hospital?.name || 'Pulmonology Report System'}
               </h1>
               <p className="text-xs text-sky-300 font-medium">
-                {hospital?.department || 'Department of Pulmonology'}
+                {hospital?.department || 'Department of Pediatrics'}
               </p>
             </div>
           </div>
