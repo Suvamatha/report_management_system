@@ -29,7 +29,7 @@
 .report-header h1,
 .report-hospital-name { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: .025em; line-height: 1.2; text-transform: uppercase; color: #0f172a; }
 .report-header p { margin: 0; }
-.report-department { color: #075985; font-weight: 700; font-size: 10.5px; margin-top: 1mm; }
+.report-department { color: #075985; font-weight: 700; font-size: 12px; margin-top: 1mm; }
 .report-contact { color: #475569; font-size: 9.5px; margin-top: 0.5mm; }
 .report-title { width: fit-content; margin: 2.5mm auto; padding: 1mm 4mm; background: #0f172a; color: white; border-radius: 2px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 .report-info-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5mm 6mm; padding: 2.5mm 3mm; border: 1px solid #cbd5e1; background: #f8fafc; }
@@ -48,7 +48,7 @@
 .is-empty { color: #64748b; font-style: italic; }
 .findings-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
 .findings-table th { padding: 1.2mm 1.5mm; background: #1e293b; color: white; font-size: 8px; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
-.findings-table th:last-child, .findings-table td:last-child { width: 22mm; text-align: center; }
+.findings-table th:last-child, .findings-table td:last-child { width: 35mm; text-align: center; }
 .findings-table td { padding: 1.15mm 1.5mm; border: 1px solid #dbe4ee; vertical-align: top; }
 .findings-table tbody tr:nth-child(even) { background: #f8fafc; }
 .finding-location { display: block; font-weight: 700; }
@@ -174,7 +174,7 @@
 
   .report-department {
     color: #075985 !important;
-    font-size: 10.5px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
   }
 

@@ -55,7 +55,7 @@ export const MedicalReportPreview: React.FC<MedicalReportPreviewProps> = ({ repo
   const findingSplit = Math.ceil(report.findings.length / 2);
   const imageCount = report.images.length;
   const logoSrc = hospital.logoUrl || '/logo/logo.png';
-  const printedDepartment = 'Pediatrics';
+  const printedDepartment = 'Department of Pediatrics';
 
   return (
     <article className="a4-container report-document bg-white text-slate-900 shadow-xl border border-slate-300 max-w-[210mm] mx-auto my-4 font-sans">
